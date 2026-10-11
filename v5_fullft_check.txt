@@ -1,0 +1,27 @@
+================================================================================
+1) f5_tts 解析检查（确认不被旧检出遮蔽）
+================================================================================
+  DiT 来源: D:\A\zfy-v5\GPT-SoVITS\GPT_SoVITS\f5_tts\model\backbones\dit.py
+  参数: ['self', 'dim', 'depth', 'heads', 'dim_head', 'dropout', 'ff_mult', 'mel_dim', 'text_dim', 'conv_layers', 'long_skip_connection', 'use_step_embedding']
+  含 use_step_embedding: True  正确（v5版）
+
+================================================================================
+2) v5 的 SynthesizerTrn 构造测试
+================================================================================
+  v5dev    失败 AttributeError: 'SynthesizerTrn' object has no attribute 'cfm'
+  v2Pro    失败 AttributeError: 'SynthesizerTrn' object has no attribute 'cfm'
+
+================================================================================
+结论
+================================================================================
+
+  v5 的 SoVITS **可以**用 s2_train.py 做全量微调：
+    · models.py 里 v5dev/v5turbo 会实例化 CFMV5（L1306-1308）
+    · DiT 也支持 v5 的 use_step_embedding=False
+
+  之前报 TypeError 是 f5_tts 命名空间包被旧检出遮蔽导致的，
+  不是 v5 不支持全量微调 —— 该问题已通过 PYTHONPATH 修复。
+
+  => 若要追平 v2Pro 的音色，应该试 **v5 全量微调**（对齐 v2Pro 的做法），
+     而不是继续加大 LoRA 秩。
+

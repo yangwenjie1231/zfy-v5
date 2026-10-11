@@ -1,0 +1,49 @@
+2026-10-09 07:02:17,542 [INFO] download models from model hub: ms
+2026-10-09 07:02:19,061 | INFO    | modelscope_hub.download | Downloading 20 files from iic/SenseVoiceSmall@master
+funasr version: 1.4.16.
+
+Downloading:   0%|          | 0/20 [00:00<?, ?file/s]
+Downloading: 100%|��������������������| 20/20 [00:00<00:00, 27.93file/s]
+Downloading: 100%|��������������������| 20/20 [00:00<00:00, 27.92file/s]
+2026-10-09 07:02:19,803 [WARNING] trust_remote_code: False
+2026-10-09 07:02:20,701 [INFO] Loading pretrained params from C:\Users\A\.cache\modelscope\models\iic--SenseVoiceSmall\snapshots\master\model.pt
+2026-10-09 07:02:20,705 [INFO] ckpt: C:\Users\A\.cache\modelscope\models\iic--SenseVoiceSmall\snapshots\master\model.pt
+2026-10-09 07:02:21,352 [INFO] scope_map: ['module.', 'None']
+2026-10-09 07:02:21,352 [INFO] excludes: None
+2026-10-09 07:02:21,519 [INFO] Loading ckpt: C:\Users\A\.cache\modelscope\models\iic--SenseVoiceSmall\snapshots\master\model.pt, status: <All keys matched successfully>
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|��������������������| 1/1 [00:00<00:00,  1.80it/s]
+{'load_data': '0.000', 'extract_feat': '0.157', 'forward': '0.557', 'batch_size': '1', 'rtf': '0.129'}, : 100%|��������������������| 1/1 [00:00<00:00,  1.80it/s]
+rtf_avg: 0.129: 100%|��������������������| 1/1 [00:00<00:00,  1.80it/s]                                                                                          
+rtf_avg: 0.129: 100%|��������������������| 1/1 [00:00<00:00,  1.79it/s]
+==============================================================================
+数据集 ref.wav (我在用)
+==============================================================================
+  路径    : D:\Users\A\Downloads\仿通行证\新素材\音频\庄方宜_TTS训练集\ref_audio\ref.wav
+  采样率  : 48000   时长: 4.32s
+  ref_text: 多亏你及时制止那些寨民袭击武陵城，为了感谢你们，我想回赠一些物资。
+  实念(ASR): 那里常年监测着周边环境的深度毒数是抵抗秦世朝的第一线
+  字数    : 期望 30 字 / 实念 26 字
+  语速    : 6.94 字/秒   (**异常快，疑似音频被截断**)
+  前缀一致: 0 字 (0%)
+  期望从第 1 字起: ...多亏你及时制止那些寨民袭击武...
+  实念从第 1 字起: ...那里常年监测着周边环境的深度...
+
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|��������������������| 1/1 [00:00<00:00,  6.15it/s]
+{'load_data': '0.000', 'extract_feat': '0.092', 'forward': '0.163', 'batch_size': '1', 'rtf': '0.020'}, : 100%|��������������������| 1/1 [00:00<00:00,  6.15it/s]
+rtf_avg: 0.020: 100%|��������������������| 1/1 [00:00<00:00,  6.15it/s]                                                                                          
+rtf_avg: 0.020: 100%|��������������������| 1/1 [00:00<00:00,  6.09it/s]
+==============================================================================
+生产 default.wav
+==============================================================================
+  路径    : D:\A\voiceclone\zfh-models-v2pro\ref\default.wav
+  采样率  : 48000   时长: 7.95s
+  ref_text: 再好的武器，也得朝夕相处磨合上几天。等用惯了，我再和你说说感受，好吗？
+  实念(ASR): 再好的武器也得朝夕相处磨合上几天等用惯了我再和你说说感受好吗
+  字数    : 期望 30 字 / 实念 30 字
+  语速    : 3.77 字/秒   (正常范围(3-4.5))
+  前缀一致: 30 字 (100%)
+

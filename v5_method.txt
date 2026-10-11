@@ -1,0 +1,55 @@
+====================================================================================
+权重张量分析
+====================================================================================
+
+v2 SoVITS (生产用)
+  文件        : zfh_e6_s186.pth
+  体积        : 85.0 MB
+  键数        : 673
+  总参数量    : 42.39 M
+  lora_A 键   : 0
+  lora_B 键   : 0
+  base_layer  : 0
+  判定        : **全量微调**（无 lora_A/B 键）
+
+v2Pro SoVITS (生产用)
+  读取失败: UnpicklingError: unpickling stack underflow
+
+v5 LoRA e8
+  读取失败: UnpicklingError: unpickling stack underflow
+
+v5 底模 s2Gv5dev
+  文件        : s2Gv5dev.pth
+  体积        : 766.4 MB
+  键数        : 681
+  总参数量    : 383.08 M
+  lora_A 键   : 0
+  lora_B 键   : 0
+  base_layer  : 0
+  判定        : **全量微调**（无 lora_A/B 键）
+
+====================================================================================
+训练脚本核对
+====================================================================================
+  s2_train.py              (v2/v2Pro 用这个)
+      import peft     : False
+      LoraConfig      : False
+      读取 lora_rank  : False
+      => 全量微调
+  s2_train_v3_lora.py      (v3/v4/v5 用这个)
+      import peft     : True
+      LoraConfig      : True
+      读取 lora_rank  : True
+      => LoRA 微调
+
+====================================================================================
+结论
+====================================================================================
+
+  v2 / v2Pro  -> s2_train.py            = **全量微调**
+                 （train_v2pro.py 里写的 lora_rank=32 是无效配置，
+                   s2_train.py 根本不读这个键）
+
+  v5dev/v5turbo -> s2_train_v3_lora.py  = **LoRA 微调**
+                 （webui.py 的分支决定：非 v1/v2/v2Pro/v2ProPlus 全走 LoRA）
+
