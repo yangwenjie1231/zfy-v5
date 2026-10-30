@@ -14,7 +14,7 @@ zfy_v5_fullft_final.ipynb
 
 ## 运行顺序
 
-1. 定位/克隆训练包
+1. 定位/克隆训练包（Notebook 会自动检查并在缺失时通过 `apt-get` 安装 `git-lfs`）
 2. 拉取最终流水线脚本
 3. 安装 SoVITS 训练依赖（不重装 torch）
 4. `doctor`

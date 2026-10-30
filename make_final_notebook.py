@@ -50,11 +50,33 @@ unfrozen ['enc_p', 'ssl_proj']; still frozen ['quantizer']
 """),
 md("## 1. 定位或克隆训练包"),
 code(r'''
-import os, subprocess, sys
+import os, shutil, subprocess, sys
 from pathlib import Path
 
 ROOT = Path("/mnt/workspace/zfy-v5-fullft-pkg")
 DATASET = "yangwenjie1231/zfy-v5-fullft-pkg"
+
+# ---------- Git LFS：检测 -> 缺失则安装 -> 初始化 ----------
+def ensure_git_lfs():
+    probe = subprocess.run(["git", "lfs", "version"], capture_output=True,
+                           text=True, encoding="utf-8", errors="replace")
+    if probe.returncode != 0:
+        print("未检测到 git-lfs，开始安装…")
+        if shutil.which("apt-get"):
+            # ModelScope ROCm Notebook 通常是 Ubuntu/root；不重装 git，只补 git-lfs。
+            subprocess.run(["apt-get", "update", "-qq"], check=True)
+            subprocess.run(["apt-get", "install", "-y", "git-lfs"], check=True)
+        else:
+            raise SystemExit(
+                "系统缺少 git-lfs 且没有 apt-get。请先安装 git-lfs，再重跑本格。")
+        probe = subprocess.run(["git", "lfs", "version"], capture_output=True,
+                               text=True, encoding="utf-8", errors="replace")
+        if probe.returncode != 0:
+            raise SystemExit("git-lfs 安装后仍不可用，停止 clone，避免只得到 LFS 指针")
+    print("✓", probe.stdout.strip())
+    subprocess.run(["git", "lfs", "install", "--skip-repo"], check=True)
+
+ensure_git_lfs()
 
 if not (ROOT / "GPT_SoVITS/configs/s2.json").exists():
     token_file = Path.home() / ".modelscope/credentials/git_token"
@@ -62,7 +84,6 @@ if not (ROOT / "GPT_SoVITS/configs/s2.json").exists():
         raise SystemExit("未找到 ModelScope git_token，请先登录")
     token = token_file.read_text().strip()
     url = f"https://oauth2:{token}@www.modelscope.cn/datasets/{DATASET}.git"
-    subprocess.run(["git", "lfs", "install"], check=True)
     subprocess.run(["git", "clone", url, str(ROOT)], check=True)
 
 os.chdir(ROOT)
