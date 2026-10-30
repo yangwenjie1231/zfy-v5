@@ -34,10 +34,42 @@ python switch_style.py gentle      # 语音娇
 
 ---
 
-## 生产配置
+## 最终 v5 full-FT（今晚训练）
+
+正式的“庄方宜第二代语音模型”底层为 **GPT-SoVITS v5**，训练方案已固定：
+
+```text
+解冻：enc_p + ssl_proj
+冻结：quantizer（防 EMA 码本漂移）
+导出：完整 state_dict（冻结 quantizer 也进入发布权重）
+保存：e8 / e16 / e24 / e32
+```
+
+在 ModelScope ROCm Notebook 中直接打开：
+
+```text
+zfy_v5_fullft_final.ipynb
+```
+
+或使用一键流水线：
+
+```bash
+python final_v5_pipeline.py doctor
+python final_v5_pipeline.py prepare
+python final_v5_pipeline.py launch
+python final_v5_pipeline.py status
+python final_v5_pipeline.py validate
+python final_v5_pipeline.py upload
+```
+
+> 不要把旧的 `nofreeze` 权重作为正式模型：旧实验解冻了 quantizer，存在码本 EMA 漂移与提前 EOS。
+
+---
+
+## 当前旧生产配置（训练最终 v5 前）
 
 ```
-SoVITS : zfh_v2pro_e12_s384.pth    （v2Pro，LoRA 微调）
+SoVITS : zfh_v2pro_e12_s384.pth    （v2Pro，全量微调）
 GPT    : zfh-e4.ckpt               （s1，v2 底模微调 4 epoch）
 参考   : ref/default.wav           （见上表，可切换）
 推理   : top_k 15 / temperature 1.0 / repetition_penalty 1.35
