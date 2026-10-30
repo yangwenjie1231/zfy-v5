@@ -347,21 +347,40 @@ def validate() -> int:
 
 
 def upload() -> int:
+    """上传完整可用模型包。
+
+    正式推理只需要 e32；e8/e16/e24 放 checkpoints 供回归与选优。
+    GPT 与三种参考音频一并上传，保证 model repo 自包含。
+    """
     if validate():
         return 1
-    items = [(WEIGHT_DIR, "sovits/v5_fullft_final"),
-             (ROOT / "final_v5_manifest.json", "sovits/v5_fullft_final/manifest.json"),
-             (CFG, "training/final_config.json"),
-             (LOG, "training/train_v5_full_e32_final.log")]
+    ws = {parse_epoch(p.name): p for p in WEIGHT_DIR.glob("*.pth")}
+    items = []
+    # 正式 SoVITS 权重
+    items.append((ws[32], f"torch_weights/{ws[32].name}"))
+    # 中间 epoch（不重复上传 e32）
+    for ep in (8, 16, 24):
+        items.append((ws[ep], f"checkpoints/v5_fullft_final/{ws[ep].name}"))
+    # GPT / 默认参考 / 三种风格
+    items += [
+        (ROOT / "ref/zfh-e4.ckpt", "torch_weights/zfh-e4.ckpt"),
+        (ROOT / "ref/default.wav", "ref/default.wav"),
+        (ROOT / "ref/ref.txt", "ref/default.txt"),
+        (ROOT / "ref/styles", "ref/styles"),
+        (ROOT / "final_v5_manifest.json", "manifest.json"),
+        (CFG, "training/final_config.json"),
+        (LOG, "training/train_v5_full_e32_final.log"),
+    ]
     for src, remote in items:
         if not src.exists():
             print("~ 跳过不存在:", src)
             continue
         run(["modelscope", "upload", MODEL_REPO, src, remote])
-    print("✓ ModelScope 上传完成:", MODEL_REPO)
-    print("GitHub Release 在本机下载后执行：")
-    print("  gh release create model-v2-v5-fullft --repo yangwenjie1231/dsh-zhuang-fangyi-voice-v2")
-    print("  gh release upload model-v2-v5-fullft <e32.pth> final_v5_manifest.json --repo ...")
+    print("✓ ModelScope 完整模型包上传完成:", MODEL_REPO)
+    print("  正式 SoVITS: torch_weights/" + ws[32].name)
+    print("  GPT: torch_weights/zfh-e4.ckpt")
+    print("  风格: ref/styles/{normal,firm,gentle}.wav")
+    print("GitHub Release 在本机执行 publish_v5_release.py 即可。")
     return 0
 
 
